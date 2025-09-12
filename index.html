@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خريطتي الذهنية الذكية</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- لوحة التحكم -->
+        <div class="controls">
+            <h1>خريطتي الذهنية الذكية</h1>
+            <p>أداة مجانية وبسيطة لمساعدتك على تنظيم أفكارك وأبحاثك.</p>
+            <input type="text" id="node-input" placeholder="اكتب فكرتك هنا...">
+            <button id="add-node-btn">إضافة فكرة</button>
+            <hr>
+            <button id="export-png-btn">تصدير كصورة (PNG)</button>
+            <button id="export-pdf-btn">تصدير كـ (PDF)</button>
+            <button id="save-map-btn">حفظ الخريطة محليًا</button>
+            <button id="clear-map-btn">مسح الخريطة</button>
+            <p id="error-message" class="error"></p>
+        </div>
+
+        <!-- مساحة الخريطة الذهنية -->
+        <div id="mind-map-container">
+            <!-- سيتم رسم العقد هنا -->
+        </div>
+    </div>
+
+    <!-- القسم السفلي للموقع -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Dalila Cherif Slimane - كل الحقوق محفوظة.</p>
+            <p>| <a href="#" id="privacy-policy-link">سياسة الخصوصية</a> |</p>
+            <div class="footer-contact">
+                <a href="mailto:barmajawebb@gmail.com">barmajawebb@gmail.com</a>
+                <span>|</span>
+                <a href="https://www.facebook.com/people/%D8%A8%D8%B1%D9%85%D8%AC%D8%A9-%D9%85%D9%88%D8%A7%D9%82%D8%B9-%D9%88-%D8%AA%D8%B7%D8%A8%D9%8A%D9%82%D8%A7%D8%AA/61579653380258/" target="_blank" rel="noopener noreferrer">صفحتنا على فيسبوك</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- نافذة منبثقة لسياسة الخصوصية -->
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>سياسة الخصوصية</h2>
+            <p>تطبيق "خريطتي الذهنية الذكية" يحترم خصوصيتك. نحن لا نجمع أو نشارك أي بيانات شخصية.</p>
+            <p>جميع الخرائط الذهنية التي تنشئها يتم حفظها محليًا في متصفحك فقط باستخدام تقنية (localStorage) ولا يتم رفعها أو تخزينها على أي خوادم خارجية.</p>
+            <p>نحن لا نستخدم ملفات تعريف الارتباط (cookies) لتتبع المستخدمين. استخدامك للتطبيق يعني موافقتك على هذه السياسة.</p>
+            <p>لأية استفسارات، يرجى التواصل معنا عبر البريد الإلكتروني: barmajawebb@gmail.com</p>
+        </div>
+    </div>
+    <!-- المكتبات الخارجية -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- الملفات البرمجية الخاصة بالتطبيق -->
+    <script src="script.js"></script>
+    <script src="export.js"></script>
+
+</body>
+</html>
