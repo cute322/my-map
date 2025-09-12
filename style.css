@@ -298,6 +298,10 @@ footer {
         margin: 20% auto; /* تقليل الهامش العلوي */
         padding: 20px;
     }
+    body {
+
+        padding-bottom: 140px; 
+    }
 }
 /* تصميم رقم الإصدار في الـ Footer */
 .version {
