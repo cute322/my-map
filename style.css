@@ -289,44 +289,49 @@ footer {
 /* الأنماط التالية تُطبق فقط على الشاشات التي عرضها 768 بكسل أو أقل */
 @media (max-width: 768px) {
 
-    /* 1. تغيير اتجاه العرض من أفقي إلى عمودي */
+    /* --- التعديل الجديد لحل مشكلة التداخل --- */
+    footer {
+        position: static; /* 1. نجعل الشريط السفلي غير ثابت */
+        margin-top: 30px; /* 2. نضيف مسافة فوقه */
+    }
+
+    body {
+        /* 3. نزيل المساحة الفارغة الكبيرة في الأسفل */
+        padding-bottom: 20px; 
+    }
+
+    #mind-map-container {
+        /* 4. نعطي مساحة أكبر للخريطة */
+        height: 70vh; 
+        width: 100%;
+    }
+    /* --- نهاية التعديل الجديد --- */
+
+    /* الأكواد القديمة المنظمة */
     .container {
-        flex-direction: column; /* لوحة التحكم فوق الخريطة */
+        flex-direction: column; 
         padding: 10px;
     }
 
-    /* 2. جعل لوحة التحكم تأخذ كامل العرض */
     .controls {
-        width: 100%; /* تأخذ كامل العرض المتاح */
-        box-sizing: border-box; /* لمنعها من الخروج عن الإطار */
-        margin-bottom: 20px; /* إضافة مسافة بينها وبين الخريطة */
+        width: 100%; 
+        box-sizing: border-box; 
+        margin-bottom: 20px; 
     }
 
-    /* 3. تعديل ارتفاع مساحة الخريطة لتناسب الهاتف */
-    #mind-map-container {
-        height: 55vh; /* تقليل الارتفاع لترك مساحة للتحكم والـ Footer */
-        width: 100%;
-    }
-
-    /* 4. جعل محتوى الـ Footer يظهر بشكل عمودي ومنظم */
     .footer-content {
-        flex-direction: column; /* العناصر فوق بعضها */
+        flex-direction: column; 
         gap: 10px;
     }
     
     .footer-contact span {
-        display: none; /* إخفاء الخط الفاصل | */
+        display: none; 
     }
 
-    /* 5. جعل النافذة المنبثقة أصغر لتناسب الشاشة */
     .modal-content {
         width: 95%;
-        margin: 20% auto; /* تقليل الهامش العلوي */
+        margin: 20% auto; 
         padding: 20px;
-    }
-    body {
-
-        padding-bottom: 140px; 
     }
 }
 
