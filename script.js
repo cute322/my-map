@@ -71,35 +71,69 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // وظيفة لجعل العقد قابلة للسحب والإفلات (هذه هي النسخة الصحيحة والكاملة)
     const makeDraggable = (element) => {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        
-        // عند الضغط على العقدة بالماوس لبدء السحب
-        element.onmousedown = dragMouseDown;
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-        function dragMouseDown(e) {
-            e.preventDefault(); // منع السلوك الافتراضي للمتصفح
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-        }
+    // تفعيل السحب للكمبيوتر (بالماوس)
+    element.onmousedown = dragMouseDown;
 
-        function elementDrag(e) {
+    // تفعيل السحب للهاتف (باللمس)
+    element.addEventListener('touchstart', dragMouseDown, { passive: false });
+
+    function dragMouseDown(e) {
+        // منع السلوك الافتراضي (مثل تحريك الصفحة عند السحب على الهاتف)
+        if (e.type === 'touchstart') {
             e.preventDefault();
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            element.style.top = (element.offsetTop - pos2) + "px";
-            element.style.left = (element.offsetLeft - pos1) + "px";
-            updateLines(); // تحديث الخطوط أثناء السحب
         }
 
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
+        // تحديد إحداثيات البداية سواء كانت من لمس أو ماوس
+        if (e.type === 'touchstart') {
+            pos3 = e.touches[0].clientX;
+            pos4 = e.touches[0].clientY;
+        } else {
+            pos3 = e.clientX;
+            pos4 = e.clientY;
         }
-    };
+
+        // تحديد وظائف إيقاف السحب وتحريكه
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+        
+        // للهاتف
+        document.ontouchend = closeDragElement;
+        document.ontouchmove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        // تحديد الإحداثيات الحالية أثناء الحركة
+        let currentX, currentY;
+        if (e.type === 'touchmove') {
+            currentX = e.touches[0].clientX;
+            currentY = e.touches[0].clientY;
+        } else {
+            currentX = e.clientX;
+            currentY = e.clientY;
+        }
+
+        // حساب المسافة
+        pos1 = pos3 - currentX;
+        pos2 = pos4 - currentY;
+        pos3 = currentX;
+        pos4 = currentY;
+
+        // تحديث موقع العقدة
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+        updateLines();
+    }
+
+    function closeDragElement() {
+        // إيقاف جميع أنواع التتبع
+        document.onmouseup = null;
+        document.onmousemove = null;
+        document.ontouchend = null;
+        document.ontouchmove = null;
+    }
+};
 
     // --- 4. الوظائف الأساسية لإنشاء العقد والتفاعل معها ---
 
