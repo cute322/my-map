@@ -73,44 +73,28 @@ document.addEventListener('DOMContentLoaded', () => {
 const makeDraggable = (element) => {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-    // تفعيل الأحداث للكمبيوتر والهاتف
-    element.onmousedown = dragStart;
-    element.addEventListener('touchstart', dragStart, { passive: false });
+    const dragStart = (e) => {
+        // منع السلوك الافتراضي فورًا عند بداية اللمس لمنع تحرك الصفحة
+        if (e.type === 'touchstart') e.preventDefault();
 
-    function dragStart(e) {
-        // تحديد إحداثيات البداية
-        if (e.type === 'touchstart') {
-            pos3 = e.touches[0].clientX;
-            pos4 = e.touches[0].clientY;
-        } else {
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-        }
+        // تسجيل إحداثيات البداية
+        pos3 = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
+        pos4 = (e.type === 'touchstart') ? e.touches[0].clientY : e.clientY;
 
         // تفعيل تتبع الحركة والإيقاف
-        document.onmouseup = dragEnd;
-        document.onmousemove = dragMove;
-        document.ontouchend = dragEnd;
-        document.ontouchmove = dragMove;
-    }
+        document.addEventListener('mouseup', dragEnd);
+        document.addEventListener('mousemove', dragMove);
+        document.addEventListener('touchend', dragEnd);
+        document.addEventListener('touchmove', dragMove, { passive: false });
+    };
 
-    function dragMove(e) {
-        // ▼▼▼ هذا هو التعديل الأهم ▼▼▼
-        // هنا فقط نمنع السلوك الافتراضي (مثل تحريك الصفحة)
-        // لأننا تأكدنا أن المستخدم يقوم بالسحب وليس مجرد نقرة
-        if (e.type === 'touchmove') {
-            e.preventDefault();
-        }
+    const dragMove = (e) => {
+        // منع تحرك الصفحة أثناء السحب على الهاتف
+        if (e.type === 'touchmove') e.preventDefault();
 
         // تحديد الإحداثيات الحالية
-        let currentX, currentY;
-        if (e.type === 'touchmove') {
-            currentX = e.touches[0].clientX;
-            currentY = e.touches[0].clientY;
-        } else {
-            currentX = e.clientX;
-            currentY = e.clientY;
-        }
+        const currentX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
+        const currentY = (e.type === 'touchmove') ? e.touches[0].clientY : e.clientY;
 
         // حساب المسافة وتحديث الموقع
         pos1 = pos3 - currentX;
@@ -120,15 +104,19 @@ const makeDraggable = (element) => {
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
         updateLines();
-    }
+    };
 
-    function dragEnd() {
+    const dragEnd = () => {
         // إيقاف جميع أنواع التتبع
-        document.onmouseup = null;
-        document.onmousemove = null;
-        document.ontouchend = null;
-        document.ontouchmove = null;
-    }
+        document.removeEventListener('mouseup', dragEnd);
+        document.removeEventListener('mousemove', dragMove);
+        document.removeEventListener('touchend', dragEnd);
+        document.removeEventListener('touchmove', dragMove);
+    };
+
+    // ربط الأحداث بالوظائف
+    element.addEventListener('mousedown', dragStart);
+    element.addEventListener('touchstart', dragStart, { passive: false });
 };
     // --- 4. الوظائف الأساسية لإنشاء العقد والتفاعل معها ---
 
