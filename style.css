@@ -1,11 +1,37 @@
-/* التصميم العام */
+
+:root {
+    --bg-color: #f4f7f9;
+    --panel-bg-color: #ffffff;
+    --text-color: #333;
+    --secondary-text-color: #7f8c8d;
+    --border-color: #bdc3c7;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --primary-color: #3498db;
+    --primary-hover-color: #2980b9;
+    --danger-color: #e74c3c;
+    --danger-hover-color: #c0392b;
+}
+
+body.dark-mode {
+    --bg-color: #1a1a2e;
+    --panel-bg-color: #16213e;
+    --text-color: #e0e0e0;
+    --secondary-text-color: #a0a0b0;
+    --border-color: #4a4a5e;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --primary-color: #0f3460;
+    --primary-hover-color: #1f5a94;
+    --danger-color: #e94560;
+    --danger-hover-color: #c43751;
+}
+
 body {
     font-family: 'Cairo', sans-serif; /* خط عربي مميز */
     direction: rtl;
-    background-color: #f4f7f9;
+    background-color: var(--bg-color);
     margin: 0;
     padding: 20px;
-    color: #333;
+    color: var(--text-color);
 }
 
 .container {
@@ -17,8 +43,8 @@ body {
 .controls {
     width: 300px;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: var(--panel-bg-color);
+    box-shadow: 0 4px 12px var(--shadow-color);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -27,14 +53,14 @@ body {
 
 .controls h1 {
     font-size: 24px;
-    color: #2c3e50;
+    color: var(--text-color);
     text-align: center;
     margin-bottom: 5px;
 }
 
 .controls p {
     font-size: 14px;
-    color: #7f8c8d;
+    color: var(--secondary-text-color);
     text-align: center;
     line-height: 1.5;
 }
@@ -42,7 +68,7 @@ body {
 .controls input[type="text"] {
     width: calc(100% - 20px);
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 16px;
 }
@@ -61,12 +87,12 @@ body {
 }
 
 #add-node-btn {
-    background-color: #3498db;
+    background-color: var(--primary-color);
     color: white;
 }
 
 #add-node-btn:hover {
-    background-color: #2980b9;
+    background-color: var(--primary-hover-color);
 }
 
 #export-png-btn, #export-pdf-btn {
@@ -88,54 +114,54 @@ body {
 }
 
 #clear-map-btn {
-    background-color: #e74c3c;
+    background-color: var(--danger-color);
     color: white;
 }
 
 #clear-map-btn:hover {
-    background-color: #c0392b;
+    background-color: var(--danger-hover-color);
 }
 
 /* مساحة الخريطة الذهنية */
 #mind-map-container {
     flex-grow: 1;
     height: 90vh;
-    border: 2px dashed #bdc3c7;
+    border: 2px dashed var(--border-color);
     border-radius: 10px;
     position: relative;
-    background-color: #ffffff;
+    background-color: var(--panel-bg-color);
     overflow: auto; /* لإخفاء أي عناصر تخرج عن الإطار */
 }
 
 /* تصميم العقدة (الفكرة) */
 .node {
-    background-color: #ffffff;
-    border: 2px solid #3498db;
-    color: #2c3e50;
+    background-color: var(--panel-bg-color);
+    border: 2px solid var(--primary-color);
+    color: var(--text-color);
     padding: 15px 25px;
     border-radius: 50px; /* شكل بيضاوي */
     position: absolute;
     cursor: grab;
     user-select: none;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .node.central {
-    background-color: #3498db;
     color: white;
-    border-color: #2980b9;
+    background-color: var(--primary-color);
+    border-color: var(--primary-hover-color);
 }
 
 .node.selected {
-    border-color: #e74c3c;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+    border-color: var(--danger-color);
+    box-shadow: 0 0 15px var(--danger-color);
 }
 
 .delete-btn {
-    background-color: #e74c3c;
+    background-color: var(--danger-color);
     color: white;
     border: none;
     border-radius: 50%;
@@ -155,7 +181,7 @@ body {
 
 /* رسالة الخطأ */
 .error {
-    color: #e74c3c;
+    color: var(--danger-color);
     font-weight: bold;
     text-align: center;
     display: none; /* مخفية بشكل افتراضي */
@@ -278,7 +304,7 @@ footer {
 
     /* 3. تعديل ارتفاع مساحة الخريطة لتناسب الهاتف */
     #mind-map-container {
-        height: 60vh; /* تقليل الارتفاع لترك مساحة للتحكم والـ Footer */
+        height: 55vh; /* تقليل الارتفاع لترك مساحة للتحكم والـ Footer */
         width: 100%;
     }
 
@@ -303,9 +329,66 @@ footer {
         padding-bottom: 140px; 
     }
 }
+
 /* تصميم رقم الإصدار في الـ Footer */
 .version {
     font-size: 12px;
     color: #7f8c8d; /* لون رمادي فاتح */
     opacity: 0.8;
 }  
+.theme-switcher {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.theme-switcher span {
+    font-weight: bold;
+    color: var(--text-color);
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}

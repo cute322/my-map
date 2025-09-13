@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveMapBtn = document.getElementById('save-map-btn');
     const clearMapBtn = document.getElementById('clear-map-btn');
     const errorMessage = document.getElementById('error-message');
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme');
+
 
     // --- 2. متغيرات لتخزين حالة الخريطة ---
     let nodes = [];
@@ -42,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const line = new LeaderLine(startNode, endNode, {
-            color: '#7f8c8d',
+            color: document.body.classList.contains('dark-mode') ? '#a0a0b0' : '#7f8c8d',
             size: 3,
             path: 'fluid'
         });
@@ -66,9 +69,40 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLines();
     };
     
+    // وظيفة لجعل العقد قابلة للسحب والإفلات (هذه هي النسخة الصحيحة والكاملة)
+    const makeDraggable = (element) => {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        
+        // عند الضغط على العقدة بالماوس لبدء السحب
+        element.onmousedown = dragMouseDown;
+
+        function dragMouseDown(e) {
+            e.preventDefault(); // منع السلوك الافتراضي للمتصفح
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            element.style.top = (element.offsetTop - pos2) + "px";
+            element.style.left = (element.offsetLeft - pos1) + "px";
+            updateLines(); // تحديث الخطوط أثناء السحب
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    };
+
     // --- 4. الوظائف الأساسية لإنشاء العقد والتفاعل معها ---
 
-    // وظيفة إنشاء عقدة جديدة
     const createNode = (text, x, y, isCentral = false) => {
         // التحقق من التكرار
         if (nodes.some(node => node.textContent.trim().toLowerCase() === text.trim().toLowerCase())) {
@@ -101,37 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
         mindMapContainer.appendChild(node);
         nodes.push({ id: node.id, element: node, textContent: text, isCentral });
 
-        makeDraggable(node);
+        makeDraggable(node); // تفعيل خاصية السحب لكل عقدة جديدة
         handleNodeSelection(node);
         return node;
-    };
-
-    // جعل العقد قابلة للسحب
-    const makeDraggable = (element) => {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        element.onmousedown = (e) => {
-            e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-        };
-
-        function elementDrag(e) {
-            e.preventDefault();
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            element.style.top = `${element.offsetTop - pos2}px`;
-            element.style.left = `${element.offsetLeft - pos1}px`;
-            updateLines();
-        }
-
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
     };
 
     // التعامل مع تحديد العقد وربطها
@@ -255,7 +261,31 @@ document.addEventListener('DOMContentLoaded', () => {
             privacyModal.style.display = 'none';
         }
     });
+    const applyTheme = (theme) => {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggle.checked = true;
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggle.checked = false;
+        }
+    };
 
-    // --- 8. تشغيل وظيفة تحميل الخريطة عند فتح الصفحة ---
+    // عند تحميل الصفحة، تحقق من وجود ثيم محفوظ
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    }
+
+    // عند الضغط على زر التبديل
+    themeToggle.addEventListener('change', () => {
+        if (themeToggle.checked) {
+            applyTheme('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            applyTheme('light');
+            localStorage.setItem('theme', 'light');
+        }
+    });
     loadMap();
+
 });
