@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMessage = document.getElementById('error-message');
     const themeToggle = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
+    const zoomInBtn = document.getElementById('zoom-in-btn');
+const zoomOutBtn = document.getElementById('zoom-out-btn');
+const zoomResetBtn = document.getElementById('zoom-reset-btn');
 
 
     // --- 2. متغيرات لتخزين حالة الخريطة ---
@@ -70,12 +73,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // وظيفة لجعل العقد قابلة للسحب والإفلات (هذه هي النسخة الصحيحة والكاملة)
+// =================================================================
+// ▼▼▼   النسخة النهائية التي تصلح السحب والربط معًا   ▼▼▼
+// =================================================================
 const makeDraggable = (element) => {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let isDragging = false;
+    const dragThreshold = 5; // مسافة 5 بكسل للتمييز بين النقرة والسحب
 
     const dragStart = (e) => {
-        // منع السلوك الافتراضي فورًا عند بداية اللمس لمنع تحرك الصفحة
-        if (e.type === 'touchstart') e.preventDefault();
+        // إعادة تعيين حالة السحب
+        isDragging = false;
 
         // تسجيل إحداثيات البداية
         pos3 = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
@@ -83,40 +91,59 @@ const makeDraggable = (element) => {
 
         // تفعيل تتبع الحركة والإيقاف
         document.addEventListener('mouseup', dragEnd);
-        document.addEventListener('mousemove', dragMove);
         document.addEventListener('touchend', dragEnd);
+        document.addEventListener('mousemove', dragMove);
         document.addEventListener('touchmove', dragMove, { passive: false });
     };
 
     const dragMove = (e) => {
-        // منع تحرك الصفحة أثناء السحب على الهاتف
-        if (e.type === 'touchmove') e.preventDefault();
-
-        // تحديد الإحداثيات الحالية
         const currentX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
         const currentY = (e.type === 'touchmove') ? e.touches[0].clientY : e.clientY;
 
-        // حساب المسافة وتحديث الموقع
-        pos1 = pos3 - currentX;
-        pos2 = pos4 - currentY;
-        pos3 = currentX;
-        pos4 = currentY;
-        element.style.top = (element.offsetTop - pos2) + "px";
-        element.style.left = (element.offsetLeft - pos1) + "px";
-        updateLines();
+        // إذا لم نكن في وضع السحب، تحقق مما إذا كانت الحركة قد تجاوزت العتبة
+        if (!isDragging) {
+            const dx = Math.abs(currentX - pos3);
+            const dy = Math.abs(currentY - pos4);
+            if (dx > dragThreshold || dy > dragThreshold) {
+                isDragging = true; // لقد بدأ السحب الفعلي
+            }
+        }
+
+        // تحريك العنصر فقط إذا كنا في وضع السحب
+        if (isDragging) {
+            // منع سلوك المتصفح (مثل تحريك الصفحة) فقط عند السحب الفعلي
+            if (e.type === 'touchmove') e.preventDefault();
+
+            // حساب الموضع الجديد للمؤشر:
+            pos1 = pos3 - currentX;
+            pos2 = pos4 - currentY;
+            pos3 = currentX;
+            pos4 = currentY;
+
+            // تحديد الموضع الجديد للعنصر:
+            element.style.top = (element.offsetTop - pos2) + "px";
+            element.style.left = (element.offsetLeft - pos1) + "px";
+            updateLines();
+        }
     };
 
     const dragEnd = () => {
-        // إيقاف جميع أنواع التتبع
+        // إلغاء ربط المستمعين
         document.removeEventListener('mouseup', dragEnd);
-        document.removeEventListener('mousemove', dragMove);
         document.removeEventListener('touchend', dragEnd);
+        document.removeEventListener('mousemove', dragMove);
         document.removeEventListener('touchmove', dragMove);
+
+        // إذا لم نقم بالسحب أبدًا، فهذا يعني أنها كانت نقرة!
+        if (!isDragging) {
+            // نقوم بتشغيل حدث النقر يدويًا على العنصر
+            element.click();
+        }
     };
 
-    // ربط الأحداث بالوظائف
+    // ربط حدث البداية بالوظيفة
     element.addEventListener('mousedown', dragStart);
-    element.addEventListener('touchstart', dragStart, { passive: false });
+    element.addEventListener('touchstart', dragStart);
 };
     // --- 4. الوظائف الأساسية لإنشاء العقد والتفاعل معها ---
 
@@ -303,6 +330,32 @@ const makeDraggable = (element) => {
             localStorage.setItem('theme', 'light');
         }
     });
+
+    let currentScale = 1.0;
+
+const updateZoom = () => {
+    mindMapContainer.style.transform = `scale(${currentScale})`;
+    // تحديث الخطوط بعد كل تغيير في الحجم هو أمر ضروري
+    updateLines();
+};
+
+zoomInBtn.addEventListener('click', () => {
+    currentScale += 0.1;
+    updateZoom();
+});
+
+zoomOutBtn.addEventListener('click', () => {
+    // منع التصغير المفرط
+    if (currentScale > 0.3) {
+        currentScale -= 0.1;
+        updateZoom();
+    }
+});
+
+zoomResetBtn.addEventListener('click', () => {
+    currentScale = 1.0;
+    updateZoom();
+});
     loadMap();
 
 });

@@ -131,6 +131,8 @@ body {
     position: relative;
     background-color: var(--panel-bg-color);
     overflow: auto; /* لإخفاء أي عناصر تخرج عن الإطار */
+    transform-origin: top left; /* نقطة ارتكاز التحجيم */
+    transition: transform 0.2s ease-in-out;
 }
 
 /* تصميم العقدة (الفكرة) */
@@ -396,4 +398,26 @@ input:checked + .slider:before {
 }
 .slider.round:before {
     border-radius: 50%;
+}
+/* تصميم أزرار التحكم بالتكبير والتصغير */
+.zoom-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.zoom-controls span {
+    font-weight: bold;
+    color: var(--secondary-text-color);
+}
+.zoom-controls button {
+    font-size: 18px;
+    font-weight: bold;
+    width: 40px; /* عرض ثابت */
+}
+#zoom-reset-btn {
+    width: auto;
+    padding: 12px;
+    font-size: 14px;
+    background-color: var(--secondary-text-color);
+    color: white;
 }
